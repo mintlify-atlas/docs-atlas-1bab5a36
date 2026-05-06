@@ -1,0 +1,49 @@
+---
+title: "What is Writer? Local-first markdown for plain text"
+description: "Writer is a local-first desktop markdown editor for folders of plain-text notes, docs, and personal wikis. No account needed — your files stay on disk."
+---
+
+Writer is a desktop markdown editor built for people who keep their thinking in plain text. Whether you maintain an Obsidian vault, a docs repo, or a personal wiki, Writer opens your folder and gets out of the way — no sync service, no database, no account required. Your `.md` files live exactly where you put them and can be opened in any other tool at any time.
+
+## What Writer is
+
+Writer is a local-first app. Every file it reads and writes is a plain `.md` file on your disk. There is no proprietary storage format and no cloud dependency. Open a folder, edit your notes, close the app — everything is where you left it.
+
+The editor is built on [CodeMirror](https://codemirror.net) with a custom rendering layer called Prosemark that decorates markdown syntax in-place: headings render at the right weight, bold and italic are styled without hiding the markers, and fenced code blocks are highlighted by language. Tables, task checkboxes, and Mermaid diagrams all render inline so you stay in one surface.
+
+Writer is built with [Tauri v2](https://tauri.app) (Rust backend), React, Zustand, and CodeMirror. It is a native macOS app — not an Electron wrapper — so it starts fast, uses native window chrome, and integrates with macOS features like vibrancy, the Dock context menu, and notarized distribution.
+
+## Who Writer is for
+
+- **Obsidian users** who want a lighter, faster alternative with native macOS feel and full wikilink support.
+- **Docs writers** who keep documentation in a Git repository and want an editor that respects `.gitignore`.
+- **Personal wiki maintainers** who organize knowledge in folders of markdown files and want tab-based navigation across many open notes.
+- **Plain-text enthusiasts** who want a focused writing environment without lock-in.
+
+## Local-first philosophy
+
+Writer never touches a sync service or remote database. Files stay on disk as `.md`. The workspace watcher notices changes from other tools — including `git pull` — and refreshes the editor without losing your place. The `.gitignore` files in your workspace are respected: files and folders they exclude are hidden from the sidebar and search, so a docs repo with `node_modules` stays clean.
+
+Sessions are restored on relaunch. Open tabs, scroll positions, and the active file are saved locally, so reopening Writer picks up exactly where you left off — without any account.
+
+## Key technologies
+
+| Layer | Technology |
+|---|---|
+| Shell | Tauri v2 (macOS native) |
+| Backend | Rust — file I/O, watcher, search, CLI |
+| Frontend | React + Zustand |
+| Editor | CodeMirror + Prosemark |
+| Theming | CSS custom properties, live token editing |
+
+<CardGroup cols={3}>
+  <Card title="Install Writer" icon="download" href="/installation">
+    Download the signed DMG and get Writer running on macOS in a few minutes.
+  </Card>
+  <Card title="Quickstart" icon="bolt" href="/quickstart">
+    Open a folder, create a note, and learn the essential shortcuts in five minutes.
+  </Card>
+  <Card title="Keyboard shortcuts" icon="keyboard" href="/reference/keyboard-shortcuts">
+    The full shortcut reference for global actions, formatting, and editor commands.
+  </Card>
+</CardGroup>

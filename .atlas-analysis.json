@@ -1,0 +1,83 @@
+{
+  "projectType": "saas",
+  "projectName": "Writer",
+  "projectDescription": "A local-first desktop markdown editor for folders of plain-text notes, docs, and personal wikis, built with Tauri, React, and Rust.",
+  "theme": "willow",
+  "primaryColor": "#FF6A00",
+  "lightColor": null,
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "features/editor",
+              "features/workspace",
+              "features/tabs-navigation",
+              "features/search",
+              "features/theming"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/keyboard-shortcuts",
+              "reference/markdown-syntax",
+              "reference/settings"
+            ]
+          },
+          {
+            "group": "Advanced",
+            "pages": [
+              "advanced/cli",
+              "advanced/multi-window",
+              "advanced/gitignore",
+              "advanced/auto-update"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "contributing/development",
+              "contributing/releasing"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Local-first plain-text editing — all files stay on disk in standard Markdown format",
+    "Rich Markdown rendering with tables, task lists, Mermaid diagrams, and wiki-links",
+    "CSS-var-driven theming with per-mode light/dark presets and live customization",
+    "Gitignore-aware workspace sidebar with fuzzy file search",
+    "Multi-window support — one workspace per window, focus existing windows on re-open",
+    "Tab system with per-tab navigation history (back/forward) and session restore",
+    "Custom find-and-replace overlay with literal case-insensitive search",
+    "macOS-native: signed and notarized DMG release with in-app auto-updater",
+    "Shell command integration — install `writer` CLI to open files from the terminal",
+    "YAML frontmatter panel with live editing and automatic title inference"
+  ],
+  "publicApiSurface": [
+    "Tauri IPC: read_directory, read_file, write_file, create_file, create_directory, rename_entry, delete_entry, file_exists, reveal_in_file_manager",
+    "Tauri IPC: open_workspace, open_workspace_in_new_window, restore_workspace, get_recent_workspaces, remove_recent_workspace, take_pending_open, save_session, load_session",
+    "Tauri IPC: index_workspace, fuzzy_search",
+    "Tauri IPC: get_settings, get_setting, set_setting, reset_setting",
+    "Tauri IPC: get_startup_state",
+    "Tauri IPC (macOS): cli_status, install_cli, uninstall_cli",
+    "writer CLI: writer <folder> — open a folder in the desktop app",
+    "writer CLI: writer <file.md> — open a specific markdown file",
+    "FS events: fs:directory-changed, index:complete, open:from-drop"
+  ]
+}

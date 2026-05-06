@@ -1,81 +1,133 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
-icon: 'rocket'
+title: "Writer quickstart: open a folder and start writing"
+description: "Launch Writer, open a folder, create your first note, format text with keyboard shortcuts, and learn the command palette — all in five minutes."
 ---
 
-## Get started in three steps
+This guide walks you through the core workflow in Writer. By the end you will have a folder open in the sidebar, a new note created and formatted, and a working mental model of how tabs, the command palette, and the CLI fit together.
 
-Get your documentation site running locally and make your first customization.
+<Steps>
+  <Step title="Launch Writer and open a folder">
+    Open Writer from Launchpad or Spotlight. The welcome screen offers two actions: **Add Folder** and **Open File**.
 
-### Step 1: Set up your local environment
+    Click **Add Folder** and select a folder that contains markdown files — or any empty folder you want to start writing in. Writer reads the directory tree, hides anything matched by `.gitignore`, and shows your files in the left sidebar.
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+    <Tip>
+      You can also drag a folder from Finder onto the Writer Dock icon or onto the app window. The `writer` CLI command (`writer ~/notes`) does the same from the terminal.
+    </Tip>
 
-### Step 2: Deploy your changes
+    Writer remembers the last open workspace and restores it on the next launch, including all open tabs and scroll positions.
+  </Step>
+  <Step title="Create a new note">
+    Press `Cmd+N` to create a new file. A name input appears inline in the sidebar — type a filename (the `.md` extension is added automatically) and press `Return`.
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+    The new file opens in the editor with a `# ` heading prompt already in place. The caret lands after the `#` so you can type the title immediately. The tab title and sidebar label update as you type.
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+    <Note>
+      Writer derives the document title from the first H1 heading in the file, or from a `title:` key in the frontmatter block. You never have to manage a separate title field.
+    </Note>
+  </Step>
+  <Step title="Format text with keyboard shortcuts">
+    Writer uses an Obsidian-aligned formatting keymap. All formatting shortcuts work when the editor is focused:
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+    | Shortcut | Result |
+    |---|---|
+    | `Cmd+B` | **Bold** |
+    | `Cmd+I` | *Italic* |
+    | `Cmd+K` | Insert link |
+    | `Cmd+E` | `Inline code` |
+    | `Cmd+Shift+X` | ~~Strikethrough~~ |
+    | `Cmd+Alt+1` | Heading 1 |
+    | `Cmd+Alt+2` | Heading 2 |
+    | `Cmd+Shift+8` | Bullet list |
+    | `Cmd+Shift+7` | Numbered list |
+    | `Cmd+Shift+Enter` | Task list item |
+    | `Cmd+Shift+.` | Blockquote |
 
-### Step 3: Go live
+    Select text first, then press the shortcut to wrap it. Pressing the same shortcut again removes the formatting.
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+    <Tip>
+      Right-click anywhere in the editor to access **Format**, **Paragraph**, and **Insert** submenus with the same commands.
+    </Tip>
+  </Step>
+  <Step title="Add frontmatter">
+    Frontmatter lets you attach structured metadata to any note. Type `---` at the very top of the document and press `Return`. The frontmatter panel mounts above the editor with an empty key/value row ready to fill in.
 
-## Next steps
+    Common frontmatter keys:
 
-Now that you have your docs running, explore these key features:
+    ```yaml
+    ---
+    title: My note title
+    tags: [writing, ideas]
+    date: 2026-05-06
+    ---
+    ```
+
+    Writer reads the `title` key and uses it as the display name in tabs and the sidebar when no H1 heading is present. All other keys are stored as-is and passed through when you export or process the file with other tools.
+  </Step>
+  <Step title="Navigate with the command palette">
+    Press `Cmd+P` to open the command palette. It searches both your files and available commands in a single list.
+
+    Start typing to filter. Press `Return` to open a file or run a command. A few useful commands to try:
+
+    - Type a filename fragment to jump to any note in the workspace.
+    - Type **new tab** to open a blank tab (`Cmd+T` also works).
+    - Type **settings** to open Preferences (`Cmd+,` also works).
+    - Type **toggle sidebar** to show or hide the file tree (`Cmd+\` also works).
+
+    <Tip>
+      Spaces in the search query are normalized to dashes, so searching `my note` matches `my-note.md`.
+    </Tip>
+  </Step>
+  <Step title="Work with multiple tabs">
+    Writer supports multiple tabs per window, one file per tab. Essential tab shortcuts:
+
+    | Shortcut | Action |
+    |---|---|
+    | `Cmd+T` | New tab |
+    | `Cmd+W` | Close current tab |
+    | `Ctrl+Tab` | Next tab |
+    | `Ctrl+Shift+Tab` | Previous tab |
+    | `Cmd+1` – `Cmd+9` | Jump to tab by position |
+    | `Alt+ArrowLeft` | Navigate back in tab history |
+    | `Alt+ArrowRight` | Navigate forward in tab history |
+
+    Each tab has its own back/forward history. `Alt+ArrowLeft` and `Alt+ArrowRight` step through the files you visited in that tab, similar to browser history.
+
+    Settings open as a proper tab (`Cmd+,`) so they stay visible while you switch between notes.
+  </Step>
+  <Step title="Install the CLI (optional)">
+    If you work in the terminal, install the `writer` shell command so you can open folders and files directly:
+
+    1. Open the **Writer** menu in the macOS menu bar.
+    2. Click **Shell Command: Install 'writer' Command in PATH**.
+    3. Enter your administrator password if prompted.
+
+    After installation:
+
+    ```bash
+    writer ~/notes          # open a folder
+    writer daily-log.md     # open a single file
+    ```
+
+    The CLI reuses the running Writer instance — if the folder is already open in a window, that window is focused instead of opening a duplicate.
+
+    See [CLI usage](/advanced/cli) for full details.
+  </Step>
+</Steps>
+
+## Where to go next
 
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="Keyboard shortcuts" icon="keyboard" href="/reference/keyboard-shortcuts">
+    The complete shortcut reference for formatting, navigation, and editor commands.
+  </Card>
+  <Card title="Editor features" icon="pencil" href="/features/editor">
+    Markdown rendering, Mermaid diagrams, wikilinks, task checkboxes, and the find/replace overlay.
+  </Card>
+  <Card title="Workspace and gitignore" icon="folder" href="/features/workspace">
+    How Writer reads your folder, watches for changes, and respects `.gitignore` rules.
+  </Card>
+  <Card title="Theming" icon="palette" href="/features/theming">
+    Customize accent color, background, fonts, and translucency with the live theme editor.
+  </Card>
 </CardGroup>
-
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>

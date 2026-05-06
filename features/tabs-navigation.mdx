@@ -1,0 +1,88 @@
+---
+title: "Tabs and per-tab history: navigate open files in Writer"
+description: "Open multiple files in tabs, jump between them with keyboard shortcuts, and navigate back and forward through your editing history within each tab."
+---
+
+Writer's tab system lets you keep multiple documents open at once. Tabs are kind-agnostic — files and the Settings panel share the same tab bar and the same keyboard shortcuts.
+
+## Opening and closing tabs
+
+| Action | Shortcut |
+|---|---|
+| New tab | Cmd+T |
+| Close current tab | Cmd+W |
+| Open Settings tab | Cmd+, |
+
+Opening a file from the sidebar or a wiki-link reuses the active tab by default. Use **Open in new tab** from the sidebar context menu to open a file in a dedicated tab.
+
+<Note>
+If you close the last tab, Writer replaces it with a launcher tab so the window remains usable.
+</Note>
+
+## Switching between tabs
+
+| Action | Shortcut |
+|---|---|
+| Next tab | Ctrl+Tab |
+| Previous tab | Ctrl+Shift+Tab |
+| Jump to tab 1–9 | Cmd+1 through Cmd+9 |
+
+Tabs scroll horizontally when there are more than fit the strip. The active tab always scrolls into view automatically.
+
+## Per-tab back and forward navigation
+
+Each tab keeps its own navigation history. Clicking a wiki-link, opening a file from the sidebar into an existing tab, or navigating programmatically all push an entry onto the tab's history stack.
+
+| Action | Shortcut |
+|---|---|
+| Navigate back | Alt+ArrowLeft |
+| Navigate forward | Alt+ArrowRight |
+
+Back and forward buttons also appear in the tab bar. History is preserved across tab switches — you can switch to another tab and return to find your position exactly where you left it.
+
+## Tab context menu
+
+Right-click any tab to open its context menu:
+
+- **Close** — closes this tab.
+- **Close others** — closes all tabs except this one.
+- **Close all** — closes every tab.
+- **Reveal in sidebar** — scrolls the sidebar to highlight the file for this tab (file tabs only).
+- **Copy path** — copies the file's absolute path to the clipboard (file tabs only).
+
+## Settings tab
+
+Press **Cmd+,** to open the Settings panel in a tab. If a Settings tab is already open, the shortcut focuses it instead of opening a second one. The Settings tab behaves like any other tab: it has a close button, participates in **Cmd+W**, and appears in the tab context menu.
+
+<Tip>
+Form state in the Settings tab is preserved when you switch away and back — Writer keeps the Settings tab alive in the background so you don't lose scroll position or partially edited fields.
+</Tip>
+
+## Session restore
+
+When you quit Writer and relaunch, your open tabs — including the Settings tab if it was open — are restored to the same state. The active file's content is loaded immediately on first render so there is no blank-frame flash.
+
+<Note>
+Session restore honors the `workspace.restore-open-files` setting. Disable it if you prefer Writer to start with a fresh launcher tab each time.
+</Note>
+
+## Document titles in tabs
+
+Tabs display the document's inferred title, not the raw filename. Writer derives the title from the first H1 heading in the body or the `title:` field in frontmatter, whichever it finds first. If neither is present, the filename (without the `.md` extension) is used as a fallback.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Editor" icon="file-pen" href="/features/editor">
+    Markdown rendering, formatting, and keyboard shortcuts in the editor.
+  </Card>
+  <Card title="Keyboard shortcuts" icon="keyboard" href="/reference/keyboard-shortcuts">
+    Complete shortcut reference for tabs, navigation, and the editor.
+  </Card>
+  <Card title="Search" icon="search" href="/features/search">
+    Find files and commands with the command palette.
+  </Card>
+  <Card title="Settings reference" icon="settings" href="/reference/settings">
+    All available settings including workspace.restore-open-files.
+  </Card>
+</CardGroup>

@@ -1,0 +1,110 @@
+---
+title: "Themes and appearance: customize Writer's look"
+description: "Writer's CSS-var theming system lets you tune accent color, background, fonts, translucency, and contrast per mode. Choose a preset or build a custom theme."
+---
+
+Writer's appearance is driven by seven primary CSS tokens per mode (light and dark). Every other color in the app — borders, hover states, cards, scrollbar thumbs — is derived from those tokens in CSS using `color-mix()` and `calc()`, so changing one primary updates the entire interface live.
+
+## Opening the Themes section
+
+Open **Settings** (Cmd+,) and scroll to the **Themes** section at the top of the Preferences panel. You'll see two stacked cards: one for Light mode and one for Dark mode.
+
+## The seven primary tokens
+
+Each mode has seven editable tokens:
+
+| Token | Type | Controls |
+|---|---|---|
+| **Accent** | Color | Links, focus rings, toggles, task checkbox fill. Default: `#FF6A00` |
+| **Background** | Color | The base background color, kept opaque internally. |
+| **Foreground** | Color | Base text and icon color. |
+| **UI font** | Font stack | Font used in the sidebar, tabs, palette, and settings. |
+| **Editor font** | Font stack | Font used in the editor body. |
+| **Translucency** | Slider (0–100) | Controls background translucency. `0` is fully solid; higher values let OS vibrancy show through every surface. |
+| **Contrast** | Slider (0–100) | Scales the alpha of derived overlay layers (borders, cards, hover states). |
+
+### Translucency
+
+The Translucency slider controls background opacity. At 0 the window is fully solid. Higher values reduce background opacity so OS vibrancy bleeds through every surface — the sidebar, editor, tab bar, command palette, and settings panel all share the same translucent base.
+
+<Warning>
+Writer clamps the minimum opacity to 5% so the window can't go fully invisible. If you need true 0% opacity, edit the config file directly.
+</Warning>
+
+### Contrast
+
+The Contrast slider (0–100) scales the alpha multiplier on all derived overlay tokens. At 0, borders, cards, and hover backgrounds vanish. At 100, they reach their maximum legibility. The slider is linear — each step scales every derived layer proportionally.
+
+## Preset themes
+
+Each mode card has a preset dropdown with four built-in options:
+
+<AccordionGroup>
+  <Accordion title="Writer">
+    The default preset. A neutral dark background with an orange accent in dark mode, and a clean light surface with a blue accent in light mode. This is the preset Writer ships with.
+  </Accordion>
+  <Accordion title="Default">
+    A standard system-aligned palette. Close to the pre-theming-system appearance of the app.
+  </Accordion>
+  <Accordion title="Warm Paper">
+    A warm off-white background with a serif editor font, suited for long-form writing.
+  </Accordion>
+  <Accordion title="High Contrast">
+    Maximum contrast borders and text for accessibility or bright-light environments.
+  </Accordion>
+</AccordionGroup>
+
+Selecting a preset writes all seven primaries for that mode at once. If you then edit any token, the preset dropdown automatically switches to **Custom** without erasing your edits.
+
+## Custom themes
+
+Edit any of the seven tokens after choosing a preset to create a custom theme. Changes are applied live — you see the result immediately without restarting.
+
+### Import and export
+
+Each mode card has **Import** and **Copy theme** actions:
+
+- **Copy theme** — serializes the current primaries for that mode as a single-line JSON object and writes it to the clipboard.
+- **Import** — paste a JSON blob to apply all primaries at once. Invalid input shows an inline error and leaves your current theme unchanged.
+
+This makes it straightforward to share themes with others or back up a theme you've tuned.
+
+## Light, dark, and system mode
+
+The **Appearance** setting (separate from Themes) controls which set of tokens is active:
+
+- **System** — follows the OS dark/light preference. Writer re-applies the matching token set automatically when the system switches.
+- **Light** — always uses the Light token set.
+- **Dark** — always uses the Dark token set.
+
+Both the light and dark token sets are always editable, even when one is not currently active.
+
+## How the system works
+
+JS writes only the seven primary tokens to `:root`. Every other token is derived in CSS:
+
+```css
+--bg: color-mix(in srgb, var(--bg-base) calc(var(--bg-opacity) * 100%), transparent);
+--text-secondary: color-mix(in srgb, var(--fg-base) 80%, transparent);
+--border-color: color-mix(in srgb, var(--fg-base) calc(var(--contrast) * 9%), transparent);
+/* ...and so on for ~20 derived tokens */
+```
+
+Because derivations are pure CSS expressions, devtools show all resolved colors and no JavaScript is needed to recompute them on every change.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Settings reference" icon="settings" href="/reference/settings">
+    All available settings including appearance.theme and theme.* tokens.
+  </Card>
+  <Card title="Editor" icon="file-pen" href="/features/editor">
+    Editor fonts and how the editor inherits theme tokens.
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get Writer set up and open your first workspace.
+  </Card>
+  <Card title="Workspace" icon="folder" href="/features/workspace">
+    Open folders and manage your markdown files.
+  </Card>
+</CardGroup>

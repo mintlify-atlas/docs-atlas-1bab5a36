@@ -1,0 +1,103 @@
+---
+title: "Editor: markdown rendering and formatting in Writer"
+description: "Writer's CodeMirror editor renders markdown inline with Prosemark decorations — headings, tables, code blocks, task lists, Mermaid diagrams, and wiki-links."
+---
+
+Writer uses a CodeMirror 6 editor augmented with Prosemark decorations to render markdown elements inline, without switching to a separate preview pane. Formatting appears as you type, and the raw source is always one click away.
+
+## Supported markdown elements
+
+Writer renders the following elements inline via Prosemark decorations:
+
+| Element | Syntax |
+|---|---|
+| Headings | `# H1` through `###### H6` |
+| Bold | `**bold**` or `__bold__` |
+| Italic | `*italic*` or `_italic_` |
+| Strikethrough | `~~strikethrough~~` |
+| Inline code | `` `code` `` |
+| Links | `[label](url)` |
+| Tables | GFM pipe tables |
+| Fenced code blocks | ` ```language ``` ` |
+| Blockquotes | `> quote` |
+| Bullet lists | `- item` or `* item` |
+| Numbered lists | `1. item` |
+| Task lists | `- [ ] task` / `- [x] done` |
+| Mermaid diagrams | ` ```mermaid ``` ` |
+| Wiki-links | `[[note title]]` |
+| Frontmatter | `---` YAML block at document start |
+
+## Mermaid diagrams
+
+Fenced code blocks with the `mermaid` info string render as inline SVG diagrams. Supported diagram types include flowchart, sequence, class, state, ER, gantt, pie, journey, gitGraph, mindmap, and timeline.
+
+When your caret is outside the fence, Writer replaces it with the rendered diagram. When you place the caret inside the fence, the raw source reappears with syntax highlighting and a live preview strip below. Diagrams adapt to the current light or dark theme automatically.
+
+<Note>
+Mermaid is loaded lazily — documents without diagrams pay no performance cost.
+</Note>
+
+## Wiki-links (Obsidian-style)
+
+Writer resolves `[[note title]]` links against files in the open workspace. Obsidian-style aliases (`[[destination|display text]]`), heading fragments (`[[note#heading]]`), and table-escaped pipes (`[[note\|alias]]`) are all supported. Clicking a wiki-link opens the destination file in the current tab.
+
+## Frontmatter panel
+
+Typing `---` at the top of a document creates a YAML frontmatter block and mounts the frontmatter panel above the editor body. The panel displays each key–value pair as an editable row. Adding the first row focuses its key input automatically.
+
+When the last row is removed — by clicking `×`, pressing Backspace on an empty row, or blurring an empty key field — Writer removes the frontmatter block from disk and returns focus to the editor. The panel is implemented as a state machine: no residual `---` delimiters are left in the file.
+
+<Tip>
+The `title` frontmatter key and the first H1 heading are both recognized by Writer's title inference logic. Tabs, sidebar rows, and the window title all update live as you type.
+</Tip>
+
+## Find and replace
+
+Press **Cmd+F** to open the find overlay. The overlay floats at the bottom-right of the editor pane and supports literal, case-insensitive search. Use **Enter** / **Shift+Enter** to jump between matches, **↑** / **↓** for previous/next, and toggle the replace row to rewrite individual matches or replace all at once. Press **Esc** to close.
+
+Press **Cmd+H** to open find-and-replace directly.
+
+## Formatting keyboard shortcuts
+
+<Note>
+These shortcuts are active only when the editor is focused. See [Keyboard shortcuts](/reference/keyboard-shortcuts) for the full reference.
+</Note>
+
+| Shortcut | Action |
+|---|---|
+| Cmd+B | Bold |
+| Cmd+I | Italic |
+| Cmd+K | Insert link |
+| Cmd+E | Inline code |
+| Cmd+Shift+X | Strikethrough |
+| Cmd+Shift+8 | Bullet list |
+| Cmd+Shift+7 | Numbered list |
+| Cmd+Shift+. | Blockquote |
+| Cmd+Shift+Enter | Task list item |
+| Cmd+Alt+1 – Cmd+Alt+6 | Heading 1–6 |
+| Cmd+Alt+0 | Paragraph (strip heading) |
+| Cmd+F | Find |
+| Cmd+H | Find and replace |
+
+## Auto-save and new files
+
+Writer saves files automatically using atomic writes — changes are written to a temporary path and renamed into place so a crash or power loss never leaves a file half-written.
+
+When you create a new file, it opens with `# ` already in the document and the caret positioned after the prompt, ready for you to type the title. The first H1 heading you type becomes the document title shown in the tab and sidebar.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Markdown syntax reference" icon="file-text" href="/reference/markdown-syntax">
+    Complete reference for every markdown feature Writer supports.
+  </Card>
+  <Card title="Keyboard shortcuts" icon="keyboard" href="/reference/keyboard-shortcuts">
+    Full shortcut map for editor formatting and navigation.
+  </Card>
+  <Card title="Tabs and navigation" icon="layout-panel-top" href="/features/tabs-navigation">
+    Open files in tabs and navigate back and forward within each tab.
+  </Card>
+  <Card title="Theming" icon="palette" href="/features/theming">
+    Customize fonts, colors, and translucency in the editor.
+  </Card>
+</CardGroup>

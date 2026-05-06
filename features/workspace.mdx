@@ -1,0 +1,84 @@
+---
+title: "Workspaces: open folders and manage markdown files"
+description: "Open any folder as a Writer workspace. Browse markdown files in the sidebar, create and rename files, and switch between recent workspaces instantly."
+---
+
+A Writer workspace is any folder on your Mac. Open a folder and Writer indexes every markdown file inside it, shows them in the sidebar file tree, and watches for changes on disk. Your notes, Obsidian vault, or docs repository all work out of the box.
+
+## Opening a workspace
+
+<Steps>
+  <Step title="Open a folder">
+    On the welcome screen, click **Add Folder** and select a folder — or drag a folder onto the Writer Dock icon, or use the `writer` CLI with `writer /path/to/folder`. If a Writer window is already open with a different workspace, the new folder opens in a new window.
+  </Step>
+  <Step title="Browse your files">
+    The sidebar file tree shows every markdown file and every folder that contains at least one markdown file. Files are listed by their inferred title (from the first H1 heading or `title:` frontmatter key) rather than their raw filename.
+  </Step>
+  <Step title="Click a file to open it">
+    Clicking a file opens it in the active tab. You can also right-click any file for the context menu.
+  </Step>
+</Steps>
+
+## Sidebar file tree
+
+The sidebar shows only `.md` files and folders that contain `.md` files. Hidden files and directories (those starting with `.`) are excluded. If the workspace contains a `.gitignore`, Writer respects it — `node_modules/`, `dist/`, and other ignored directories stay out of the sidebar and out of search results. See [Gitignore support](/advanced/gitignore) for details.
+
+The sidebar uses ARIA tree semantics (`role="tree"`, `role="treeitem"`, `aria-expanded`) so it is accessible with keyboard and screen reader navigation.
+
+## File operations
+
+Right-click any file in the sidebar to open its context menu:
+
+| Action | Description |
+|---|---|
+| Open | Opens the file in the current tab (same as clicking). |
+| Open in new tab | Always opens a new tab for the file. |
+| Duplicate | Creates a uniquely named sibling file (e.g. `note copy.md`). |
+| Copy relative path | Copies the workspace-relative path with forward slashes. |
+| Copy absolute path | Copies the full filesystem path. |
+| Reveal in Finder | Opens the parent folder in Finder with the file selected (macOS). |
+| Delete | Moves the file to the system trash. |
+
+## Folder operations
+
+Right-click any folder row for the folder context menu:
+
+- **New File** — creates a new markdown file inside the folder and enters inline rename mode.
+- **New Folder** — creates a subfolder and enters rename mode.
+- **Copy relative path / Copy absolute path** — copies the folder path to the clipboard.
+- **Reveal in Finder** — shows the folder in Finder.
+- **Rename…** — puts the folder row into inline rename mode. Open tabs pointing to files inside the renamed folder update their paths automatically.
+- **Delete** — moves the folder to trash.
+
+## Bulk selection
+
+Hold **Cmd** and click to toggle individual files in or out of the selection. Hold **Shift** and click to select a range. When two or more items are selected, right-clicking shows a bulk context menu with options to copy paths or delete all selected items. Press **Escape** to clear the selection.
+
+## Workspace switcher
+
+The workspace switcher lives in the sidebar footer. Click the switcher to open a native popup menu listing all recent workspaces. Selecting a workspace that is not already open creates a new window for it. Selecting one that is already open focuses its window instead of duplicating it.
+
+<Tip>
+On macOS, recent workspaces also appear in the Dock icon context menu (right-click or hold the Dock icon). Selecting a workspace from the Dock menu follows the same focus-or-open logic as the in-app switcher.
+</Tip>
+
+## Multiple windows
+
+Each Writer window hosts exactly one workspace. Opening a second workspace always creates a new window rather than replacing the current one. See [Multi-window](/advanced/multi-window) for the full details.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Search" icon="search" href="/features/search">
+    Find files and run commands with the command palette.
+  </Card>
+  <Card title="Gitignore support" icon="git-branch" href="/advanced/gitignore">
+    How Writer respects .gitignore when indexing your workspace.
+  </Card>
+  <Card title="CLI" icon="terminal" href="/advanced/cli">
+    Open folders and files from the terminal with the writer command.
+  </Card>
+  <Card title="Multi-window" icon="app-window" href="/advanced/multi-window">
+    Work with multiple workspaces in separate windows simultaneously.
+  </Card>
+</CardGroup>

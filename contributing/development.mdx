@@ -1,0 +1,163 @@
+---
+title: "Set up a local development environment for Writer"
+description: "Clone the Writer repo, install prerequisites, and run the desktop app locally using the vp CLI, Tauri's dev server, and the Rust toolchain."
+---
+
+Writer is built on Tauri v2 with a React frontend and a Rust backend. The monorepo lives under `apps/desktop/` for the desktop app, `apps/website/` for the landing page, and `docs/` for project documentation. All frontend tooling flows through the `vp` CLI (Vite+), so you won't call pnpm or npm directly.
+
+## Prerequisites
+
+Before cloning, make sure you have the following installed:
+
+- **Node.js ≥ 22.12.0** — required by Vite+. Run `node --version` to check.
+- **pnpm** — used as the underlying package manager. Vite+ wraps it; you won't call it directly.
+- **Rust toolchain** — the Tauri backend is written in Rust. Install via [rustup](https://rustup.rs/).
+- **Xcode Command Line Tools** (macOS) — required by Tauri for native compilation. Install with `xcode-select --install`.
+- **Vite+ CLI (`vp`)** — the single entry point for all dev tasks. Install it globally once: follow the [Vite+ setup instructions](https://voidzero.dev/vite-plus).
+
+<Note>
+  Writer's macOS releases are arm64 only. Development on Intel Macs is untested.
+</Note>
+
+## Repository layout
+
+```
+writer-computer/
+├── apps/
+│   ├── desktop/               # Tauri desktop application
+│   │   ├── src/               # React frontend
+│   │   │   └── stores/        # Zustand state stores
+│   │   └── src-tauri/
+│   │       └── src/           # Rust backend
+│   │           └── commands/  # Tauri IPC command handlers
+│   └── website/               # Marketing landing page
+├── docs/                      # Project and agent workflow docs
+└── SPECs/                     # Feature specs and design notes
+```
+
+## Setup
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/joelbqz/writer-computer.git
+    cd writer-computer
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    Use `vp install` — never call pnpm directly. Vite+ resolves workspaces and installs all packages across the monorepo.
+
+    ```bash
+    vp install
+    ```
+  </Step>
+
+  <Step title="Start the development server">
+    `vp dev` starts the Vite frontend and the Tauri application together. The app window opens automatically.
+
+    ```bash
+    vp dev
+    ```
+
+    <Tip>
+      Run `vp dev` from the repo root, not from `apps/desktop/`. The root-level config wires up the full Tauri + Vite dev pipeline.
+    </Tip>
+  </Step>
+</Steps>
+
+## Validation
+
+Run these before submitting changes:
+
+```bash
+vp check   # format, lint, and TypeScript type checks
+vp test    # JavaScript/TypeScript tests
+```
+
+Rust validation runs separately from the Tauri crate directory:
+
+```bash
+cargo test
+cargo clippy
+cargo fmt --check
+```
+
+<Warning>
+  Run Rust validation from `apps/desktop/src-tauri/`, not the repo root — there is no workspace-level Cargo manifest.
+</Warning>
+
+## The `vp` CLI
+
+Writer uses Vite+ (`vp`), a unified toolchain that wraps Vite, Vitest, Oxlint, Oxfmt, and pnpm behind one CLI. Always use `vp` instead of calling underlying tools directly.
+
+| Command | What it does |
+|---|---|
+| `vp install` | Install all monorepo dependencies |
+| `vp dev` | Run the Tauri + Vite development server |
+| `vp check` | Format, lint, and TypeScript type-check |
+| `vp test` | Run JavaScript/TypeScript tests |
+| `vp lint` | Lint with Oxlint |
+| `vp fmt` | Format with Oxfmt |
+| `vp build` | Production build |
+| `vp add <pkg>` | Add a dependency |
+| `vp run <script>` | Run a `package.json` script by name |
+
+<Note>
+  Built-in `vp` commands always run the Vite+ built-in tool, not a same-named `package.json` script. To run a custom script named `dev`, use `vp run dev`, not `vp dev`.
+</Note>
+
+### Common pitfalls
+
+<AccordionGroup>
+  <Accordion title="Do not call pnpm, npm, or Yarn directly">
+    Vite+ wraps the package manager. Calling pnpm directly can leave the workspace in an inconsistent state. Always use `vp add`, `vp remove`, `vp update`, etc.
+  </Accordion>
+  <Accordion title="Do not run wrapped tools as vp subcommands">
+    `vp vitest` and `vp oxlint` do not exist. Use `vp test` and `vp lint` instead.
+  </Accordion>
+  <Accordion title="Do not install Vitest, Oxlint, Oxfmt, or tsdown directly">
+    Vite+ bundles these tools. Installing them separately will conflict. Import test utilities from `vite-plus/test`, not from `vitest`.
+  </Accordion>
+  <Accordion title="Use vp dlx instead of npx">
+    For one-off package binaries, use `vp dlx <package>` instead of `npx` or pnpm's `dlx`.
+  </Accordion>
+</AccordionGroup>
+
+## Architecture
+
+Writer follows a clean split between a React frontend and a Rust backend, bridged by Tauri's IPC layer.
+
+```
+React frontend  ──IPC──►  Tauri runtime  ──────►  Rust backend
+(apps/desktop/src/)       (Tauri v2)        (apps/desktop/src-tauri/src/)
+```
+
+**Frontend** (`apps/desktop/src/`): React components, Zustand state stores, and a CodeMirror/Prosemark editor. State management is store-based — no Redux, no Context for global state.
+
+**Backend** (`apps/desktop/src-tauri/src/`): Rust IPC command handlers registered through Tauri's plugin and command system. File I/O, workspace indexing, and the file watcher all run on the Rust side.
+
+### Frontend stores
+
+| Store | Responsibility |
+|---|---|
+| `editor-store.ts` | Active document, editor state, unsaved changes |
+| `settings-store.ts` | User preferences, persisted via Tauri plugin-store |
+| `workspace-store.ts` | Open workspace, file tree, navigation |
+| `ui-store.ts` | Sidebar visibility, panel layout, transient UI state |
+
+### Rust modules
+
+| Module | Responsibility |
+|---|---|
+| `lib.rs` | App setup, plugin registration, command registration |
+| `state.rs` | Global app state: workspace root, file index, watcher handle |
+| `error.rs` | Error types serialized over IPC |
+| `watcher.rs` | File system watcher with debounce and self-write detection |
+| `commands/fs.rs` | File read/write/rename/delete IPC commands |
+| `commands/workspace.rs` | Workspace open/close and directory listing |
+| `commands/search.rs` | Full-text search across workspace files |
+| `commands/images.rs` | Image asset resolution and inlining |
+| `commands/settings.rs` | Settings read/write IPC handlers |
+| `commands/startup.rs` | App startup sequence and state initialization |
+| `commands/shell_install.rs` | CLI shell integration install/uninstall |

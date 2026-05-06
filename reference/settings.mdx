@@ -1,0 +1,138 @@
+---
+title: "Settings reference: all Writer preferences explained"
+description: "Complete reference for every setting in Writer's Preferences panel, with key names, types, defaults, and descriptions for all categories."
+---
+
+Open the Preferences panel with `Cmd+,` (or via the Writer menu). Settings are stored in a plain-text config file using a `key = value` format and are resolved in three layers — defaults, then global user config, then workspace-level config — so you can override any setting per project by editing `.writer/config` at the workspace root.
+
+<Note>
+  Workspace-level settings in `.writer/config` override the global config for that workspace only. Settings not present at the workspace level fall back to the global value, which falls back to the built-in default.
+</Note>
+
+## Editor
+
+Settings that control the editor's text layout.
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `editor.font-size` | number | `16` | Font size in pixels for the editor body. |
+| `editor.line-height` | number | `1.6` | Line height multiplier for the editor body. |
+| `editor.tab-size` | number | `2` | Number of spaces per tab stop. |
+
+## Appearance
+
+Settings that control the overall visual layout of the app shell.
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `appearance.theme` | enum | `system` | Color scheme: `system` follows the OS, `light` forces light mode, `dark` forces dark mode. |
+| `appearance.sidebar-width` | number | `240` | Default sidebar width in pixels. |
+| `appearance.sidebar-visible` | boolean | `true` | Whether the sidebar is shown by default. |
+| `appearance.editor-width` | enum | `full` | Editor content width: `full` fills the pane, `narrow` constrains the line length. |
+
+## Theming
+
+The Themes section in Preferences shows two cards — one for light mode, one for dark mode — each with the settings below. Editing any token updates the UI live without restarting the app. Selecting a preset writes all seven primaries for that mode at once; editing any token after a preset selection switches the preset indicator to **Custom** without discarding your edits.
+
+Available presets: **Writer**, **Default**, **Warm Paper**, **High Contrast**.
+
+### Light theme
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `theme.light.preset` | string | `Writer` | Active preset name, or `custom` when any token has been individually edited. |
+| `theme.light.accent` | color | `#FF6A00` | Accent color used for links, focus rings, and interactive toggles. |
+| `theme.light.background` | color | `#FFFFFF` | Base background color. |
+| `theme.light.foreground` | color | `#0D0D0D` | Base foreground/text color. |
+| `theme.light.ui-font` | string | System sans-serif stack | Font stack used for all UI chrome (sidebar, tabs, settings). |
+| `theme.light.editor-font` | string | System sans-serif stack | Font stack used for the editor body. |
+| `theme.light.translucent` | range 0–100 | `10` | Background translucency. `0` is fully solid; higher values reduce opacity and let OS vibrancy show through every surface. Minimum opacity is clamped at 5% so the window can't become fully invisible. |
+| `theme.light.contrast` | range 0–100 | `20` | Alpha multiplier on derived overlay layers (borders, cards, hover backgrounds). `0` makes overlays invisible; `100` is maximum visibility. |
+
+### Dark theme
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `theme.dark.preset` | string | `Writer` | Active preset name, or `custom` when any token has been individually edited. |
+| `theme.dark.accent` | color | `#FF6A00` | Accent color used for links, focus rings, and interactive toggles. |
+| `theme.dark.background` | color | `#111111` | Base background color. |
+| `theme.dark.foreground` | color | `#FCFCFC` | Base foreground/text color. |
+| `theme.dark.ui-font` | string | System sans-serif stack | Font stack used for all UI chrome. |
+| `theme.dark.editor-font` | string | System sans-serif stack | Font stack used for the editor body. |
+| `theme.dark.translucent` | range 0–100 | `20` | Background translucency. `0` is fully solid; higher values reduce opacity and let OS vibrancy show through every surface. |
+| `theme.dark.contrast` | range 0–100 | `16` | Alpha multiplier on derived overlay layers. |
+
+<Tip>
+  Use **Copy theme** in the Themes section to export the current mode's primaries as a JSON blob you can paste into **Import** on another machine or workspace.
+</Tip>
+
+## Files
+
+Settings that control how Writer reads and saves files.
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `files.associations` | list | `*.md`, `*.mdx`, `*.markdown` | File glob patterns included in the workspace file tree. Add additional patterns by repeating the key on separate lines in the config file. |
+| `files.default-encoding` | string | `utf-8` | Text encoding used when reading and writing files. |
+| `files.insert-final-newline` | boolean | `true` | Append a trailing newline to files on save if one is absent. |
+| `files.trim-trailing-whitespace` | boolean | `false` | Strip trailing whitespace from lines on save. |
+
+## Workspace
+
+Settings that control workspace session behavior.
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `workspace.restore-open-files` | boolean | `true` | Reopen the files that were open the last time this workspace was used. |
+| `workspace.max-recent-workspaces` | number | `10` | How many recent workspaces to keep in the switcher and dock menu. |
+
+## Window
+
+Settings that control app-level window behavior.
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `window.restore-workspace` | boolean | `true` | Automatically reopen the last workspace when the app launches. |
+
+## Search
+
+Settings that control the full-text workspace search.
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `search.debounce-ms` | number | `150` | Milliseconds to wait after the last keystroke before running a search query. |
+| `search.max-results` | number | `50` | Maximum number of results returned per search query. |
+
+## Config file format
+
+Settings are stored in a Ghostty-style plain-text format. Lines beginning with `#` are comments; blank lines are ignored. Repeated keys accumulate into a list.
+
+```text
+# Global Writer config
+appearance.theme = system
+editor.font-size = 16
+editor.line-height = 1.6
+
+# Include additional file types
+files.associations = *.md
+files.associations = *.txt
+```
+
+The global config file lives at `~/Library/Application Support/com.writer-computer.app/config` on macOS. Workspace-level overrides go in `.writer/config` at the root of your workspace folder.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Theming" icon="palette" href="/features/theming">
+    Visual guide to the theming system and preset options.
+  </Card>
+  <Card title="Keyboard shortcuts" icon="keyboard" href="/reference/keyboard-shortcuts">
+    Every keyboard shortcut available in Writer.
+  </Card>
+  <Card title="Workspace" icon="folder-open" href="/features/workspace">
+    How Writer organizes and watches your files.
+  </Card>
+  <Card title="CLI reference" icon="terminal" href="/advanced/cli">
+    Open files and folders in Writer from the command line.
+  </Card>
+</CardGroup>

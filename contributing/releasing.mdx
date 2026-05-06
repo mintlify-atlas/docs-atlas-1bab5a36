@@ -1,0 +1,157 @@
+---
+title: "Release Writer: sign, notarize, and publish a build"
+description: "Cut a signed, notarized arm64 macOS release locally using distribute.sh, then publish the draft to GitHub so the in-app updater picks it up."
+---
+
+Writer releases are cut locally on the maintainer's machine — not in CI. Apple's code signing and notarization requirements mean the signing identity and credentials must be available at build time, which rules out a standard GitHub Actions workflow. The `scripts/distribute.sh` script handles the full pipeline: build, sign, notarize, staple, package, and create a GitHub draft release.
+
+<Warning>
+  Releases are arm64 macOS only. Cross-platform builds (Windows, Linux, x86_64 macOS) are not supported by the current script and config.
+</Warning>
+
+## Pre-flight checks
+
+Before starting the release flow, confirm:
+
+- `vp check` and `vp test` both pass with no errors.
+- A `CHANGELOG.md` entry for this release already exists. If it doesn't, write it first in a separate commit — the version bump commit should only touch version fields.
+
+`scripts/distribute.sh` enforces its own pre-flight checks automatically: it refuses to run unless you're on `master` with a clean working tree, a fast-forward of `origin/master`, and the target tag doesn't already exist locally or on origin.
+
+## Release flow
+
+<Steps>
+  <Step title="Bump the version in four files">
+    The authoritative version lives in `apps/desktop/src-tauri/tauri.conf.json`. The script reads it from there to derive the tag (`v<version>`) and DMG filename. Three other files must be kept in sync:
+
+    | File | Field |
+    |---|---|
+    | `apps/desktop/src-tauri/tauri.conf.json` | `version` |
+    | `apps/desktop/src-tauri/Cargo.toml` | `[package].version` |
+    | `apps/desktop/package.json` | `version` |
+    | `apps/desktop/src-tauri/Cargo.lock` | auto-refreshed |
+
+    Refresh `Cargo.lock` from the Tauri crate directory:
+
+    ```bash
+    cargo update -p desktop --offline
+    ```
+
+    Use a **patch bump** for fixes and small improvements, a **minor bump** for new user-visible features. Major bumps are reserved for breaking changes or 1.0.
+
+    Commit with a message like `Bump version to <version>`. Do not bundle other changes into this commit. Do not push or tag manually — the script does both.
+  </Step>
+
+  <Step title="Draft user-facing release notes">
+    The `CHANGELOG.md` bullets are written for engineers — too detailed for the GitHub release page. Write a short, user-facing version from the latest dated section and save it to a file (any path; a temp file works fine):
+
+    ```bash
+    # Example: write notes to a temp file
+    vim /tmp/release-notes.md
+    ```
+
+    Guidelines for the drafted notes:
+
+    - 3–8 bullets, one short line each. Lead with user-visible behavior, not implementation.
+    - Optional short intro paragraph, then bullets — no headings needed.
+    - No code spans for internal symbols and no spec or PR references.
+    - Active, terse, sentence case — match the voice of the existing CHANGELOG.
+
+    <Tip>
+      The draft isn't final. You can edit the notes inline on GitHub before clicking Publish.
+    </Tip>
+  </Step>
+
+  <Step title="Run distribute.sh">
+    Run from the repo root, passing the notes file:
+
+    ```bash
+    ./scripts/distribute.sh --notes-file /tmp/release-notes.md
+    ```
+
+    The script runs the following steps in order:
+
+    1. Validate `.env`, signing credentials, and the notes file (must exist and be non-empty).
+    2. Run pre-flight git checks (on master, clean tree, fast-forward of origin, tag doesn't already exist).
+    3. Push `master` to origin so the commit is published before the build starts.
+    4. Build the desktop crate in release mode (`vp exec tauri build --bundles app,dmg`).
+    5. Sign `Writer.app` and the DMG with the Developer ID identity from `.env`.
+    6. Submit to Apple notarization and wait for the result.
+    7. Staple the notarization ticket to the app.
+    8. Bundle `Writer.app.tar.gz` and produce `Writer.app.tar.gz.sig` using the Tauri updater key.
+    9. Write `latest.json` with the new version, signature, and download URL.
+    10. Create a **draft** release on `joelbqz/writer-computer` via `gh release create --draft`, uploading the DMG, updater tarball, and `latest.json`.
+    11. Tag the repo with `v<version>` and push the tag to origin.
+    12. Print the draft URL.
+
+    <Note>
+      Expect the script to take several minutes. Most of that time is the cargo release build and Apple notarization — notarization is also the step most likely to fail.
+    </Note>
+  </Step>
+
+  <Step title="Review and publish the draft on GitHub">
+    Open the draft URL printed by the script. Confirm:
+
+    - Three assets are attached: `Writer_<version>_aarch64.dmg`, `Writer.app.tar.gz`, `latest.json`.
+    - The release notes read well. Edit them inline on GitHub if needed.
+
+    Click **Publish release**. Until you publish, the in-app updater won't see the new version — the `latest` endpoint skips drafts.
+
+    <Warning>
+      If you abandon the draft instead of publishing, delete the draft on GitHub and then drop the tag manually:
+
+      ```bash
+      git tag -d v<version>
+      git push origin :refs/tags/v<version>
+      ```
+    </Warning>
+  </Step>
+
+  <Step title="Verify the updater endpoint">
+    Confirm the `latest.json` URL resolves to the new version:
+
+    ```
+    https://github.com/joelbqz/writer-computer/releases/latest/download/latest.json
+    ```
+
+    The in-app updater hits this URL on every launch (configured in `apps/desktop/src-tauri/tauri.conf.json`). Existing installs will pick up the update automatically on next launch.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Pre-flight check fails">
+    The script aborted before doing anything irreversible. Read the error message, fix the underlying state (commit, pull, bump version, etc.), and re-run. Common causes: uncommitted changes, not on `master`, or the branch is behind origin.
+  </Accordion>
+
+  <Accordion title="Notarization fails">
+    Apple's response includes a submission ID. Do not retry blindly — common causes are an entitlement mismatch, an unsigned binary inside the bundle, or an expired signing identity. Review the notarization log and ask the maintainer how to proceed.
+  </Accordion>
+
+  <Accordion title="gh release create fails because the tag already exists">
+    A previous attempt got far enough to publish. Do not delete the existing release without explicit user permission — it may already be live to users via the updater. Ask first.
+  </Accordion>
+
+  <Accordion title="Build fails after the version bump is committed">
+    Fix the build, commit the fix, and re-run `distribute.sh`. Do not amend or revert the bump commit unless the maintainer explicitly asks.
+  </Accordion>
+
+  <Accordion title="Script succeeded but the local tag push failed">
+    The draft release is already created. You only need to push the tag — don't re-run the whole script:
+
+    ```bash
+    git push origin v<version>
+    ```
+  </Accordion>
+
+  <Accordion title="You realize mid-release that the version was wrong">
+    Stop. Reverting is risky once the GitHub release exists. Ask the maintainer before taking any destructive action.
+  </Accordion>
+</AccordionGroup>
+
+## What this process does not cover
+
+- Cross-platform releases (Windows, Linux, x86_64 macOS). The script and Tauri config are arm64-only.
+- CI-driven releases. There is no GitHub Actions workflow for building releases — everything runs on the maintainer's machine because of the Apple signing requirement.
+- Rolling back a published release. There is no documented rollback procedure; escalate to the maintainer if needed.

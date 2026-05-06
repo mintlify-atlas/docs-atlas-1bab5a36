@@ -1,133 +1,61 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
-icon: 'star'
+title: "Writer: local-first markdown editor for plain-text notes"
+description: "Writer is a desktop markdown editor built on Tauri. Keep all your notes as plain text on disk, organized in folders, and write without distractions."
 ---
 
-## Setting up
+Writer is a local-first desktop markdown editor designed for folders of plain-text notes, documentation, and personal wikis. Every document lives on your disk as a standard `.md` file — no proprietary format, no sync account required. Open any folder as a workspace, write in a focused editor, and navigate your files through a clean sidebar.
 
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Download Writer for macOS and get the app running in minutes.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Open your first workspace and start writing in under five minutes.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Editor features" icon="pen-to-square" href="/features/editor">
+    Rich Markdown rendering, Mermaid diagrams, wiki-links, and more.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Keyboard shortcuts" icon="keyboard" href="/reference/keyboard-shortcuts">
+    The complete shortcut reference for navigation, formatting, and search.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## What Writer does
 
-Everything you need to create world-class documentation.
+Writer keeps your writing workflow entirely on your machine. You open a folder — an Obsidian vault, a docs repo, a personal notes directory — and Writer shows you the markdown files inside it. The editor renders headings, lists, tables, task checkboxes, code blocks, and Mermaid diagrams as you type. Files are saved automatically, atomically, with no data loss on crash.
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
+<CardGroup cols={2}>
+  <Card title="Workspace & sidebar" icon="folder-open" href="/features/workspace">
+    Browse, create, rename, and delete files from the sidebar.
   </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
+  <Card title="Tabs & navigation" icon="rectangle-history" href="/features/tabs-navigation">
+    Open multiple files in tabs with per-tab back/forward history.
   </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
+  <Card title="Search" icon="magnifying-glass" href="/features/search">
+    Find any file in your workspace instantly with fuzzy search.
   </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
+  <Card title="Theming" icon="palette" href="/features/theming">
+    Customize accent, background, fonts, and translucency per mode.
   </Card>
-</Columns>
+</CardGroup>
 
-## Make your content agent ready
+## Get started
 
-Make your docs work for humans and AI agents alike.
+<Steps>
+  <Step title="Download Writer">
+    Grab the latest signed macOS DMG from the [GitHub releases page](https://github.com/joelbqz/writer-computer/releases/latest).
+  </Step>
+  <Step title="Open a folder">
+    Launch Writer and click **Add Folder** on the welcome screen, or drag a folder onto the Dock icon.
+  </Step>
+  <Step title="Start writing">
+    Click any `.md` file in the sidebar to open it, or press `Cmd+N` to create a new note. Type `# ` to add a title and begin writing immediately.
+  </Step>
+  <Step title="Navigate with the command palette">
+    Press `Cmd+P` to open the command palette and jump to any file or run any command without leaving the keyboard.
+  </Step>
+</Steps>
 
-<Columns cols={2}>
-  <Card
-    title="Prompt component"
-    icon="robot"
-    href="/agent-ready/prompt"
-  >
-    Embed shareable AI prompts readers can copy or open in Cursor.
-  </Card>
-  <Card
-    title="Visibility"
-    icon="eye"
-    href="/agent-ready/visibility"
-  >
-    Show different content to humans and agents reading your docs.
-  </Card>
-  <Card
-    title="Contextual menu"
-    icon="bolt"
-    href="/agent-ready/contextual"
-  >
-    Give readers one-click access to Claude, ChatGPT, Cursor, and more.
-  </Card>
-  <Card
-    title="AI coding tools"
-    icon="wand-magic-sparkles"
-    href="/ai-tools/claude-code"
-  >
-    Set up Claude Code, Cursor, or Windsurf with Mintlify's skill.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<Tip>
+  Install the `writer` shell command from **Writer → Shell Command: Install 'writer' Command in PATH** to open folders and files directly from the terminal with `writer .` or `writer notes.md`.
+</Tip>

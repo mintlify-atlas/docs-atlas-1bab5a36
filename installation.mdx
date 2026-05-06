@@ -1,0 +1,68 @@
+---
+title: "Install Writer on macOS: download and set up the app"
+description: "Download the signed and notarized Writer DMG from GitHub Releases and install it on Apple Silicon macOS. No Gatekeeper warnings, no dependencies."
+---
+
+Writer is a native macOS app distributed as a signed and notarized DMG. It targets Apple Silicon (arm64) and requires macOS 11 or later. Because the app is notarized by Apple, macOS will open it without any Gatekeeper security warning — no right-click workarounds needed.
+
+<Note>
+Writer currently ships as an arm64 (Apple Silicon) binary only. Intel Mac support is not available at this time.
+</Note>
+
+## Install Writer
+
+<Steps>
+  <Step title="Download the DMG from GitHub Releases">
+    Go to the [Writer releases page](https://github.com/joelbqz/writer-computer/releases/latest) and download the file named `Writer_<version>_aarch64.dmg`.
+
+    The release page also lists what changed in each version. The in-app updater will notify you of new releases automatically after installation.
+  </Step>
+  <Step title="Open the DMG">
+    Double-click the downloaded `.dmg` file. macOS will mount the disk image and open a Finder window showing the Writer app and an **Applications** folder shortcut.
+
+    Because the app is notarized, macOS verifies the signature automatically. No security dialog will block you from opening it.
+  </Step>
+  <Step title="Drag Writer to Applications">
+    Drag **Writer.app** onto the **Applications** folder shortcut in the DMG window. macOS copies the app to `/Applications`.
+
+    After the copy completes, eject the disk image by pressing `Cmd+E` in Finder or clicking the eject button next to the mounted volume in the sidebar.
+  </Step>
+  <Step title="Launch Writer">
+    Open **Launchpad** or **Spotlight** (`Cmd+Space`) and search for **Writer**, then press `Return`.
+
+    On the very first launch, macOS may take a moment to verify the app signature. This happens once and is not a security warning — it is the standard notarization check.
+  </Step>
+  <Step title="Open a folder">
+    Writer opens to a welcome screen with two actions: **Add Folder** and **Open File**.
+
+    Click **Add Folder** and select any folder that contains markdown files — an Obsidian vault, a docs repository, or a folder of personal notes all work. Writer reads the directory, respects `.gitignore` rules, and displays your files in the sidebar.
+
+    You can also drag a folder or a single `.md` file directly onto the Writer Dock icon or onto the app window to open it.
+  </Step>
+</Steps>
+
+## After installation
+
+### Install the `writer` CLI command
+
+Writer can install a `writer` shell command so you can open files and folders from the terminal:
+
+```bash
+writer ~/notes
+writer my-note.md
+```
+
+To install it, open the **Writer** menu in the menu bar and click **Shell Command: Install 'writer' Command in PATH**. Writer will prompt for administrator permission if `/usr/local/bin` is not user-writable. See [CLI usage](/advanced/cli) for details.
+
+### Automatic updates
+
+Writer checks for updates on launch and once per day. When a new version is available, a native dialog asks whether to install it. The update downloads in the background and is applied on restart. You can also trigger a check manually from **Writer → Check for Updates…** in the menu bar. See [Auto-update](/advanced/auto-update) for details.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="bolt" href="/quickstart">
+    Open your first note, learn the keyboard shortcuts, and get productive in five minutes.
+  </Card>
+  <Card title="CLI usage" icon="terminal" href="/advanced/cli">
+    Open files and folders in Writer directly from the terminal with the `writer` command.
+  </Card>
+</CardGroup>

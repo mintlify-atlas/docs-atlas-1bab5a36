@@ -1,0 +1,77 @@
+---
+title: "Automatic updates: how Writer stays up to date"
+description: "Writer checks for new releases on launch and once per day, prompts you to install with a single click, and restarts cleanly — all through native macOS dialogs."
+---
+
+Writer checks for updates automatically so you always have access to the latest features and fixes. When a new release is available, a native dialog prompts you to install it. The update is downloaded, verified, and installed in place — no manual download or reinstall required.
+
+## How updates are checked
+
+Writer checks for updates in two ways:
+
+- **On launch** — a check runs automatically a few seconds after the app starts. If an update is available and you haven't already dismissed that version, a prompt appears.
+- **Once per day** — while the app stays open, a background check runs every 24 hours. Automatic checks are silent when no update is available.
+
+You can also trigger a check manually at any time.
+
+## Checking manually
+
+<Steps>
+  <Step title="Open the Writer menu">
+    In the macOS menu bar, click **Writer**.
+  </Step>
+  <Step title="Click Check for Updates…">
+    Writer contacts the update server and reports the result in a native dialog.
+
+    - If you're on the latest version, the dialog confirms it: **You're up to date. Writer x.y.z is the latest version.**
+    - If a new version is available, an install prompt appears.
+  </Step>
+</Steps>
+
+The menu item label reflects the current state. While a check is in progress it reads **Checking for Updates…** and is temporarily disabled.
+
+## Installing an update
+
+When a new version is found, Writer shows a native dialog with the version number and release notes.
+
+<Steps>
+  <Step title="Review the update">
+    The dialog shows the new version number and any release notes from that release.
+  </Step>
+  <Step title="Choose Install and Restart">
+    Click **Install and Restart** to download and apply the update. Writer downloads the signed DMG, verifies its signature, installs it, and relaunches automatically.
+
+    Click **Later** to dismiss the prompt. Writer will not ask again for this version unless you trigger a manual check.
+  </Step>
+</Steps>
+
+<Warning>
+  Save any open files before installing an update. Writer relaunches automatically after the install completes.
+</Warning>
+
+## Dismissed versions
+
+If you click **Later** on an update prompt, Writer remembers that you dismissed that specific version and suppresses the automatic prompt for it on subsequent launches. You can still install the update at any time using **Check for Updates…** from the Writer menu.
+
+Once you install a newer version, the dismissed version record is cleared.
+
+## Update signatures
+
+Updates are distributed as signed and notarized macOS DMGs. The updater verifies the cryptographic signature before applying any update. If the signature check fails, the update is rejected and an error dialog is shown.
+
+The update manifest (`latest.json`) is hosted alongside DMG releases on GitHub Releases.
+
+<Note>
+  The auto-updater is macOS only in the current release and applies exclusively to the signed DMG distribution.
+</Note>
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Installation" href="/installation">
+    Download and install Writer from the signed DMG.
+  </Card>
+  <Card title="Releasing" href="/contributing/releasing">
+    How new Writer releases are built, signed, and published.
+  </Card>
+</CardGroup>

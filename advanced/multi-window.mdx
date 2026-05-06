@@ -1,0 +1,54 @@
+---
+title: "Multiple windows: one workspace per window in Writer"
+description: "Open as many Writer windows as you need, each hosting its own independent workspace, tab strip, sidebar, and file watcher — all inside a single app process."
+---
+
+Writer supports multiple windows at the same time, with each window hosting its own workspace. You can keep your personal notes open in one window and a project repo in another, switching between them the same way you switch between any macOS windows.
+
+## Opening a new window
+
+There are several ways to open a workspace in a new window:
+
+- **Sidebar workspace switcher** — click the workspace name in the sidebar footer and select a recent workspace or browse for a folder. Writer opens the chosen workspace in a new window.
+- **Welcome screen** — use the **Add Folder** or **Open File** actions on the welcome screen.
+- **Command palette** — open the palette with `⌘P` and search for a workspace or use the open-folder command.
+- **Dock menu** — right-click the Writer icon in the Dock and select a recent workspace from the list.
+- **Drag and drop** — drag a folder or markdown file onto the Writer Dock icon to open it in a new window.
+
+<Tip>
+  If the workspace you're opening is already hosted by another window, Writer focuses that window instead of opening a duplicate.
+</Tip>
+
+## How windows are isolated
+
+Each window is fully independent:
+
+- **Separate workspace state** — workspace root, file index, and open tabs belong to the window. Switching workspaces in one window does not affect any other window.
+- **Separate file watcher** — each window runs its own filesystem watcher scoped to its workspace. File changes in window A's workspace do not trigger sidebar refreshes in window B.
+- **Separate settings layer** — settings are loaded independently per window. Changes saved in one window's preferences panel take effect in that window immediately; other windows reflect the change after their next settings load.
+- **Separate command palette and sidebar** — each window has its own command palette, sidebar tree, and tab history.
+
+## Closing a window
+
+Closing a window tears down that window's workspace state cleanly. The file watcher is cancelled, FSEvents subscriptions are released, and the in-memory file index is freed. Other open windows are not affected.
+
+<Note>
+  Recent workspaces and session files are stored in shared app data, so concurrent writes from two windows can race at the filesystem layer. This is a known limitation tracked for a future release.
+</Note>
+
+## Known limitations
+
+- Global settings changed in one window are not reflected in other windows until those windows reload their settings.
+- Multiple open windows are not restored at relaunch. Each launch starts with a single window. Per-session multi-window restore is planned for a future release.
+- Tab tear-off (dragging a tab into its own window) is not supported in the current version.
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Writer CLI" href="/advanced/cli">
+    Open workspaces from the terminal with the writer command.
+  </Card>
+  <Card title="Workspace" href="/features/workspace">
+    Learn how Writer manages files and folders within a workspace.
+  </Card>
+</CardGroup>

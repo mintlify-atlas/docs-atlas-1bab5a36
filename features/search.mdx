@@ -1,0 +1,81 @@
+---
+title: "Search files and commands with the command palette"
+description: "Press Cmd+P to open Writer's command palette. Search files and commands together with substring matching, space-separated queries, and instant ranked results."
+---
+
+Writer's command palette is a single search interface for files in your workspace and built-in commands. Press **Cmd+P** to open it from anywhere in the app.
+
+## Opening the palette
+
+| Action | Shortcut |
+|---|---|
+| Open command palette | Cmd+P |
+| Open command palette | Cmd+Shift+P |
+
+Both shortcuts open the same unified palette. There is no separate "command mode" — files and commands are always searched together.
+
+## Searching for files
+
+Type any part of a filename or path to find files in the open workspace. The palette performs a case-insensitive substring match against each file's workspace-relative path.
+
+**Space-separated queries work.** Writer normalizes spaces to dashes before matching, so typing `my note` finds `my-note.md`. This makes it easy to search for hyphenated filenames without holding Shift.
+
+### Result ranking
+
+Matches are ranked in this order:
+
+1. Commands always appear above file results.
+2. Among file results, a match inside the **filename** ranks higher than a match in a parent directory component.
+3. Within that, earlier match positions rank higher.
+4. Shorter paths break remaining ties.
+
+The matched span is underlined in the result subtitle so you can see exactly where your query landed.
+
+<Tip>
+You don't need to type the full filename. A few distinctive characters from anywhere in the path are usually enough to bring the right file to the top.
+</Tip>
+
+## Searching for commands
+
+Commands appear at the top of results and are always visible in the default "Suggested" view before you type anything. Each command shows a description subtitle so you know what it does without running it.
+
+Common commands available in the palette include:
+
+- **New file** — create a new markdown file in the current workspace.
+- **New tab** — open a blank launcher tab.
+- **Open workspace** — switch to a different folder.
+- **Settings** — open the Settings tab.
+
+## Find and replace in the document
+
+The command palette searches across files. To search within the current document, use the find overlay:
+
+| Action | Shortcut |
+|---|---|
+| Find in document | Cmd+F |
+| Find and replace | Cmd+H |
+
+The find overlay floats at the bottom-right of the editor pane. It supports literal, case-insensitive search across the open file. Use **Enter** / **Shift+Enter** to step through matches, or use the replace row to rewrite one match at a time or all at once. Press **Esc** to dismiss.
+
+See [Editor](/features/editor) for more details on the find overlay behavior.
+
+## Palette appearance
+
+The palette surface uses a translucent panel with a backdrop blur so it reads clearly over the editor without a heavy overlay. No separate backdrop or dark overlay is added — the palette floats above your content.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Editor" icon="file-pen" href="/features/editor">
+    Find and replace within the current document using Cmd+F.
+  </Card>
+  <Card title="Workspace" icon="folder" href="/features/workspace">
+    Open folders and manage files in the sidebar.
+  </Card>
+  <Card title="Keyboard shortcuts" icon="keyboard" href="/reference/keyboard-shortcuts">
+    Full shortcut reference including Cmd+P and Cmd+F.
+  </Card>
+  <Card title="Tabs and navigation" icon="layout-panel-top" href="/features/tabs-navigation">
+    Open files in tabs and navigate your editing history.
+  </Card>
+</CardGroup>

@@ -1,0 +1,97 @@
+---
+title: "Writer CLI: open files and folders from the terminal"
+description: "Install the writer shell command to open any folder or markdown file in Writer from your terminal. Run writer . to open the current directory."
+---
+
+The `writer` shell command lets you open a folder or markdown file in Writer without leaving your terminal. Run `writer .` to open the current directory as a workspace, or pass any path to open it directly. Once installed, it works from any shell session.
+
+## Installing the CLI
+
+The `writer` command is a symlink from `/usr/local/bin/writer` to the Writer binary inside the app bundle. Installing it takes one click from the app menu.
+
+<Steps>
+  <Step title="Open the Writer menu">
+    In the macOS menu bar, click **Writer**.
+  </Step>
+  <Step title="Run the install command">
+    Click **Shell Command: Install 'writer' Command in PATH**.
+
+    If `/usr/local/bin` is not writable by your user, macOS will display an administrator authorization prompt. Approve it to complete the install.
+  </Step>
+  <Step title="Verify the install">
+    Open a new terminal window and run:
+
+    ```bash
+    which writer
+    ```
+
+    You should see `/usr/local/bin/writer`.
+  </Step>
+</Steps>
+
+<Note>
+  Installing the CLI via the app menu (**Writer → Shell Command: Install 'writer' Command in PATH**) is macOS only. The binary itself includes code paths for Linux and Windows via the `WRITER_APP_PATH` environment variable.
+</Note>
+
+## Usage
+
+```bash
+writer .              # open current directory as workspace
+writer ~/notes        # open a specific folder
+writer README.md      # open a specific file
+writer               # launch Writer with no target
+writer --help        # print usage and exit
+writer --version     # print version and exit
+```
+
+### Path resolution
+
+The `writer` command resolves paths the same way drag-and-drop does:
+
+- A **directory** opens as a workspace.
+- A **`.md` or `.markdown` file** opens its parent directory as the workspace and the file as the active document.
+- Any other file type, a missing path, or an unreadable path exits with a non-zero code and prints a message to stderr. The app is not launched.
+
+Relative paths and `.` / `..` are resolved against the current working directory before being passed to the app, so `writer .` from inside `~/notes` behaves identically to `writer ~/notes`.
+
+### Exit codes
+
+| Code | Meaning |
+| ---- | ------- |
+| `0`  | Writer was launched or signaled successfully. |
+| `2`  | Invalid usage (unknown flag, too many arguments). |
+| `3`  | Path not found, unsupported file type, or Writer could not be located. |
+
+## How it works
+
+The Writer binary is a multi-call executable: when invoked as `writer` (via the symlink), it acts as the CLI launcher rather than launching the full desktop app. Installing the CLI creates a single symlink at `/usr/local/bin/writer` pointing to `Writer.app/Contents/MacOS/Writer`. Because the symlink points through the bundle path, it continues to work correctly after Writer updates — no reinstall needed.
+
+When you run `writer .`, the CLI resolves the path and calls `open -a Writer <path>` on macOS. If Writer is already running, macOS forwards the path to the running instance via the single-instance handler, which opens the workspace in a new window. If Writer is not running, it launches with the path as its startup argument.
+
+<Tip>
+  Set the `WRITER_APP_PATH` environment variable to point at a specific Writer bundle or binary. This is useful if you have a development build alongside a release build and want the CLI to target a particular one.
+</Tip>
+
+## Uninstalling the CLI
+
+To remove the `writer` command from your PATH:
+
+1. Click **Writer** in the menu bar.
+2. Click **Shell Command: Uninstall 'writer' Command in PATH**.
+
+The menu item label toggles between install and uninstall based on the current state, so only the relevant action is shown at any time.
+
+<Warning>
+  If `/usr/local/bin/writer` already exists and is **not** a symlink managed by Writer (for example, a binary placed there by another tool), Writer will not overwrite it. Remove the existing file manually before installing.
+</Warning>
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" href="/quickstart">
+    Get Writer set up for the first time.
+  </Card>
+  <Card title="Multiple windows" href="/advanced/multi-window">
+    Open more than one workspace at a time.
+  </Card>
+</CardGroup>

@@ -1,0 +1,65 @@
+---
+title: "Gitignore-aware workspaces: hiding files in Writer"
+description: "Writer reads every .gitignore file in your workspace tree and keeps ignored paths out of the sidebar, search, and file watcher automatically."
+---
+
+When you open a code repository or any folder that contains a `.gitignore` file, Writer reads those rules and hides the matching paths from the sidebar, search results, and file watcher. Build artifacts, dependency folders, and generated output stay out of the way without any configuration.
+
+## What gets hidden
+
+Writer applies a layered set of exclusions to every path in the workspace:
+
+- **`.gitignore` rules** — all `.gitignore` files found anywhere in the workspace tree are collected and applied. A rule in a nested `.gitignore` applies only to files within that directory.
+- **`node_modules` and `.git`** — these directories are always hidden, regardless of what your `.gitignore` says. They cannot be made visible.
+- **Hidden files (dotfiles)** — files and directories whose names begin with `.` are excluded from the sidebar. The `.gitignore` file itself remains visible.
+
+<Note>
+  Writer does not honor per-user global gitignore files (`~/.gitignore_global`) in the current version.
+</Note>
+
+## Scoped rules
+
+Each `.gitignore` file only applies to its own directory and subdirectories — the same scoping behavior as Git itself. A `*` rule in `docs/.gitignore` hides everything inside `docs/`, but has no effect on files at the workspace root or in sibling directories.
+
+This means you can have tooling directories with aggressive ignore rules (for example, `.vite-hooks/_/.gitignore` containing `*`) without accidentally hiding the rest of your workspace.
+
+## Live updates
+
+Writer watches for changes to `.gitignore` files. If you create, edit, or delete a `.gitignore` while Writer is open, the sidebar refreshes automatically to reflect the new rules — no restart required.
+
+This applies to:
+
+- Creating a new `.gitignore` anywhere in the workspace tree.
+- Adding or removing patterns in an existing `.gitignore`.
+- Deleting a `.gitignore` file (its rules are dropped, previously hidden paths become visible again).
+
+## How it works
+
+The ignore matcher is built from the [`ignore` crate](https://docs.rs/ignore) — the same library used by ripgrep. Writer walks the workspace directory tree and collects every `.gitignore` file it finds, building one scoped matcher per file. Deeper matchers take precedence over shallower ones, matching Git's own resolution order.
+
+The matcher is rebuilt on a background thread whenever the watcher detects a `.gitignore` change, so the IPC thread is never blocked by a large workspace scan.
+
+<Tip>
+  If a path should be visible in Writer but is being hidden by a `.gitignore` rule, you can un-ignore it with a negation rule: add `!path/to/file` to the relevant `.gitignore`. Writer respects negation (whitelist) rules the same way Git does.
+</Tip>
+
+## Affected surfaces
+
+The ignore rules apply consistently across all of Writer's file-aware features:
+
+| Surface | Behavior |
+| ------- | --------- |
+| Sidebar file tree | Ignored paths are not shown. |
+| Fuzzy file search | Ignored files do not appear in search results. |
+| File watcher | Changes inside ignored paths do not trigger sidebar or tab updates. |
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Workspace" href="/features/workspace">
+    How Writer indexes and manages files within a workspace.
+  </Card>
+  <Card title="Search" href="/features/search">
+    Full-text and fuzzy search across your workspace files.
+  </Card>
+</CardGroup>
